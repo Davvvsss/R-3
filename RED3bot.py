@@ -61,10 +61,10 @@ async def notify_trx(tx: Dict, amount: float, direction: str) -> None:
     balance = await get_balance()
     url = trx_link(tx["txID"])
     text = (
-        f"{direction} **{amount:.2f} TRX**\n"
-        f"{url}\n"
-        f"💰 Balance: `{balance} TRX`"
-    )
+    f"{direction} **{amount:.2f} TRX**\n"
+    f"{url}\n"
+    f"💰 Balance: `{balance} TRX`"
+)
     await bot.send_message(
         CHAT_ID, text, parse_mode="Markdown", disable_web_page_preview=True
     )
