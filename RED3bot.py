@@ -65,15 +65,29 @@ async def notify_trx(tx: Dict, amount: float, direction: str):
     if amount < MIN_TRX:
         return
     balance = await get_balance()
+    url = trx_link(tx["txID"])
     text = (
-        f"{direction} **{amount:.2f} TRX**\n"
-        f"[TronScan]({trx_link(tx['txID'])})\n"
+        f"{direction} **{amount:.2f} TRX**
+"
+        f"{url}
+"
         f"💰 Balance: `{balance} TRX`"
     )
-    await bot.send_message(CHAT_ID, text, parse_mode="Markdown")
+    await bot.send_message(CHAT_ID, text, parse_mode="Markdown", disable_web_page_preview=True)
 
 
 async def notify_usdt(txid: str, amount: float, in_out: str):
+    if amount < MIN_USDT:
+        return
+    url = trx_link(txid)
+    text = (
+        f"{in_out} **{amount:.2f} USDT**
+"
+        f"{url}"
+    )
+    await bot.send_message(CHAT_ID, text, parse_mode="Markdown", disable_web_page_preview=True)
+
+(txid: str, amount: float, in_out: str):
     if amount < MIN_USDT:
         return
     text = (
@@ -112,6 +126,14 @@ async def handle_tx(tx: Dict):
 # -------------------------
 
 async def main() -> None:
+    # Первичная инициализация — запоминаем последние 20 ID, но НЕ отправляем их
+    try:
+        boot_batch = await fetch_transactions()
+        for tx in boot_batch:
+            seen_tx.add(tx["txID"])
+    except Exception:
+        pass  # если сеть недоступна на старте — проигнорируем
+
     while True:
         try:
             for tx in await fetch_transactions():
@@ -126,4 +148,5 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    asyncio.run(main()) == "__main__":
     asyncio.run(main())
